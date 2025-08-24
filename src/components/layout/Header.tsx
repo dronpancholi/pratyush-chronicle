@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, FileText, Users, Archive, Phone, Home } from 'lucide-react';
+import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, profile, signOut } = useAuth();
 
   const navigation = [
     { name: 'Home', href: '/', icon: Home },
@@ -53,6 +55,33 @@ const Header = () => {
             })}
           </nav>
 
+          {/* Auth Section */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <div className="flex items-center space-x-2">
+                {profile && ['admin', 'editor'].includes(profile.role) && (
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/admin">
+                      <User className="h-4 w-4 mr-2" />
+                      Admin
+                    </Link>
+                  </Button>
+                )}
+                <Button variant="ghost" size="sm" onClick={signOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/auth">
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Link>
+              </Button>
+            )}
+          </div>
+
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
@@ -89,6 +118,33 @@ const Header = () => {
                 );
               })}
             </nav>
+
+            {/* Mobile Auth Section */}
+            <div className="px-2 pt-2 pb-3 border-t border-border">
+              {user ? (
+                <div className="space-y-2">
+                  {profile && ['admin', 'editor'].includes(profile.role) && (
+                    <Button className="w-full" variant="outline" asChild onClick={() => setIsMenuOpen(false)}>
+                      <Link to="/admin">
+                        <User className="h-4 w-4 mr-2" />
+                        Admin Panel
+                      </Link>
+                    </Button>
+                  )}
+                  <Button className="w-full" variant="ghost" onClick={() => { signOut(); setIsMenuOpen(false); }}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Button className="w-full" variant="outline" asChild onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/auth">
+                    <User className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </div>

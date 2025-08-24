@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import PDFViewer from '@/components/PDFViewer';
 import SearchBar from '@/components/SearchBar';
-import { FileText, Calendar, Users, Download, Share2, Eye } from 'lucide-react';
+import { useNewsletters } from '@/hooks/useNewsletters';
+import { FileText, Calendar, Users, Download, Share2, Eye, ExternalLink, Loader2 } from 'lucide-react';
 import { departments } from '@/data/departments';
 
 const CurrentIssue = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const currentDate = new Date();
-  const currentMonth = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const { currentNewsletter, loading } = useNewsletters();
   
   // Filter departments based on search
   const filteredDepartments = departments.filter(dept => 
@@ -23,7 +22,7 @@ const CurrentIssue = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Pratyush Chronicle - ${currentMonth}`,
+          title: currentNewsletter ? currentNewsletter.title : 'Pratyush Chronicle',
           text: 'Check out the latest newsletter from Government Polytechnic Ahmedabad',
           url: window.location.href,
         });
@@ -37,6 +36,32 @@ const CurrentIssue = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading current issue...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentNewsletter) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <FileText className="h-16 w-16 mx-auto mb-6 text-muted-foreground" />
+          <h2 className="text-2xl font-bold text-foreground mb-2">No Current Issue</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            There is no published newsletter issue available at the moment. 
+            Please check back later or contact the administration.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header Section */}
@@ -49,16 +74,21 @@ const CurrentIssue = () => {
               </div>
             </div>
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Pratyush Chronicle - {currentMonth}
+              {currentNewsletter.title}
             </h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Monthly Newsletter - Government Polytechnic Ahmedabad
+              {currentNewsletter.description || "Latest newsletter from Pratyush Club"}
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <Calendar className="h-3 w-3" />
-                <span>{currentDate.toLocaleDateString()}</span>
+                <span>
+                  {new Date(currentNewsletter.issue_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                  })}
+                </span>
               </Badge>
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <Users className="h-3 w-3" />
@@ -75,8 +105,20 @@ const CurrentIssue = () => {
                 <Share2 className="h-4 w-4 mr-2" />
                 Share Issue
               </Button>
-              <Button asChild>
-                <a href="/newsletter.pdf" download>
+              <Button 
+                asChild 
+                variant="outline"
+                className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                disabled={!currentNewsletter.pdf_url}
+              >
+                <a href={currentNewsletter.pdf_url || '#'} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open in New Tab
+                </a>
+              </Button>
+              
+              <Button asChild disabled={!currentNewsletter.pdf_url}>
+                <a href={currentNewsletter.pdf_url || '#'} download>
                   <Download className="h-4 w-4 mr-2" />
                   Download PDF
                 </a>
@@ -91,16 +133,20 @@ const CurrentIssue = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="academic-card">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <FileText className="h-5 w-5" />
-                <span>Complete Newsletter - {currentMonth}</span>
-              </CardTitle>
+              <CardTitle className="text-center">Newsletter PDF Viewer</CardTitle>
+              <CardDescription className="text-center">
+                Read the current issue online or use the buttons above to open in a new tab or download
+              </CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
-              <PDFViewer 
-                src="/newsletter.pdf" 
-                title={`Pratyush Chronicle - ${currentMonth}`}
-              />
+            <CardContent>
+              {currentNewsletter.pdf_url ? (
+                <PDFViewer src={currentNewsletter.pdf_url} title={currentNewsletter.title} />
+              ) : (
+                <div className="text-center py-12">
+                  <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">PDF not available for this issue</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
