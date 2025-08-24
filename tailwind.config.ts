@@ -82,9 +82,12 @@ export default {
 				'subtle': 'var(--shadow-subtle)',
 			},
 			transitionDuration: {
-				'fast': 'var(--transition-fast)',
-				'smooth': 'var(--transition-smooth)',
-				'elegant': 'var(--transition-elegant)',
+				'fast': '150ms',
+				'smooth': '300ms',
+				'elegant': '500ms',
+			},
+			transitionTimingFunction: {
+				'academic': 'cubic-bezier(0.4, 0, 0.2, 1)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

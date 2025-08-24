@@ -180,7 +180,7 @@ All colors MUST be HSL. Professional, accessible, academic aesthetic.
 @layer components {
   /* Academic Card Component */
   .academic-card {
-    @apply bg-card border border-border rounded-lg shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-elegant)] transition-shadow duration-[var(--transition-smooth)];
+    @apply bg-card border border-border rounded-lg shadow-subtle hover:shadow-elegant transition-shadow duration-smooth;
   }
 
   /* Hero Gradient Background */
@@ -190,26 +190,26 @@ All colors MUST be HSL. Professional, accessible, academic aesthetic.
 
   /* Professional Button Variants */
   .btn-academic {
-    @apply bg-primary hover:bg-[hsl(var(--primary-hover))] text-primary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-[var(--transition-fast)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-elegant)];
+    @apply bg-primary hover:bg-primary-hover text-primary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-fast shadow-subtle hover:shadow-elegant;
   }
 
   .btn-academic-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-[var(--transition-fast)];
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium px-6 py-3 rounded-lg transition-all duration-fast;
   }
 
   .btn-academic-ghost {
-    @apply text-primary hover:bg-secondary hover:text-primary font-medium px-6 py-3 rounded-lg transition-all duration-[var(--transition-fast)];
+    @apply text-primary hover:bg-secondary hover:text-primary font-medium px-6 py-3 rounded-lg transition-all duration-fast;
   }
 
   /* PDF Viewer Container */
   .pdf-viewer {
-    @apply w-full bg-card border border-border rounded-lg overflow-hidden shadow-[var(--shadow-subtle)];
+    @apply w-full bg-card border border-border rounded-lg overflow-hidden shadow-subtle;
     min-height: 600px;
   }
 
   /* Search Input Styling */
   .search-input {
-    @apply w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-[var(--transition-fast)];
+    @apply w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-fast;
   }
 
   /* Department Grid */
