@@ -129,14 +129,6 @@ export const departments: Department[] = [
     description: 'Polymer technology, plastic processing, and materials engineering',
     category: 'engineering'
   },
-  {
-    id: '16',
-    name: 'Science and Humanities',
-    slug: 'science-humanities',
-    shortName: 'S&H',
-    description: 'Basic sciences, mathematics, and humanities education',
-    category: 'science'
-  }
 ];
 
 export const getDepartmentBySlug = (slug: string): Department | undefined => {

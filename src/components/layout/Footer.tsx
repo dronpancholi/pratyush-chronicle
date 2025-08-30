@@ -13,12 +13,12 @@ const Footer = () => {
                 <FileText className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-foreground">Pratyush Chronicle</h3>
+                <h3 className="text-lg font-bold text-foreground">Pratyush Newsletter</h3>
                 <p className="text-sm text-muted-foreground">Government Polytechnic Ahmedabad</p>
               </div>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-              The official monthly newsletter platform for the Pratyush Club, featuring 
+              The monthly newsletter platform for the Pratyush Club, featuring 
               department-wise content, achievements, and announcements from Government Polytechnic Ahmedabad.
             </p>
           </div>
@@ -77,17 +77,16 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="mt-8 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            {/* Credits - Critical Requirement */}
+            {/* Disclaimer */}
             <div className="text-center md:text-left">
-              <h5 className="text-sm font-semibold text-foreground mb-2">Credits</h5>
-              <div className="space-y-1">
-                <p className="text-sm text-foreground">
-                  <span className="font-medium">Concept, Direction, Design, Development & Editorial:</span> Dron Pancholi
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-medium">Club President:</span> Alaukik Dave
-                </p>
-              </div>
+              <p className="text-xs text-muted-foreground italic">
+                This is not the official newsletter of Government Polytechnic Ahmedabad.
+                <br />
+                Created by students, for the students.
+              </p>
+              <p className="text-xs text-muted-foreground mt-2" style={{ letterSpacing: '0.1em' }}>
+                Crafted with care • ∂ρ
+              </p>
             </div>
 
             {/* Copyright */}

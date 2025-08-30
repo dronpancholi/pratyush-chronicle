@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import pratyushLogo from '@/assets/pratyush-logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,11 +26,13 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo and Brand */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <FileText className="h-6 w-6" />
-            </div>
+            <img 
+              src={pratyushLogo} 
+              alt="Pratyush Club Logo" 
+              className="h-10 w-10 object-contain"
+            />
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-foreground">Pratyush Chronicle</h1>
+              <h1 className="text-xl font-bold text-foreground">Pratyush Newsletter</h1>
               <p className="text-sm text-muted-foreground">Government Polytechnic Ahmedabad</p>
             </div>
           </Link>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Download, Users, Archive, Calendar, BookOpen } from 'lucide-react';
 import heroImage from '@/assets/hero-newsletter.jpg';
+import DepartmentsHorizontal from '@/components/DepartmentsHorizontal';
 
 const Home = () => {
   const currentDate = new Date();
@@ -16,7 +17,7 @@ const Home = () => {
     },
     {
       icon: Users,
-      title: '16 Departments',
+      title: '15 Departments',
       description: 'Comprehensive coverage from all engineering and academic departments'
     },
     {
@@ -45,10 +46,10 @@ const Home = () => {
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              Pratyush Chronicle
+              Pratyush Newsletter
             </h1>
             <p className="text-xl sm:text-2xl mb-4 opacity-90">
-              Official Newsletter of Government Polytechnic Ahmedabad
+              Student Newsletter of Government Polytechnic Ahmedabad
             </p>
             <p className="text-lg mb-8 opacity-80 max-w-2xl mx-auto">
               Discover the latest achievements, innovations, and updates from all departments 
@@ -93,7 +94,7 @@ const Home = () => {
                 </div>
                 <CardTitle className="text-2xl">Monthly Newsletter - {currentMonth}</CardTitle>
                 <p className="text-muted-foreground">
-                  Featuring updates from all 16 departments, achievements, events, and announcements
+                  Featuring updates from all 15 departments, achievements, events, and announcements
                 </p>
               </CardHeader>
               <CardContent className="text-center space-y-6">
@@ -119,7 +120,7 @@ const Home = () => {
                   </div>
                   <div className="text-center">
                     <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-sm font-medium text-foreground">16 Departments</p>
+                    <p className="text-sm font-medium text-foreground">15 Departments</p>
                     <p className="text-xs text-muted-foreground">Full Coverage</p>
                   </div>
                   <div className="text-center">
@@ -143,7 +144,7 @@ const Home = () => {
       <section className="py-16 bg-secondary/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Why Pratyush Chronicle?</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">Why Pratyush Newsletter?</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Your comprehensive source for all academic and technical updates from Government Polytechnic Ahmedabad
             </p>
@@ -167,6 +168,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Departments Horizontal Display */}
+      <DepartmentsHorizontal />
 
       {/* Call to Action */}
       <section className="py-16 bg-background">

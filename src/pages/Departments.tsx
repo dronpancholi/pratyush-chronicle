@@ -28,7 +28,6 @@ const Departments = () => {
     { id: 'all', name: 'All Departments', count: departments.length },
     { id: 'engineering', name: 'Engineering', count: getDepartmentsByCategory('engineering').length },
     { id: 'technology', name: 'Technology', count: getDepartmentsByCategory('technology').length },
-    { id: 'science', name: 'Science', count: getDepartmentsByCategory('science').length },
     { id: 'administrative', name: 'Administrative', count: getDepartmentsByCategory('administrative').length },
   ];
 
@@ -38,8 +37,6 @@ const Departments = () => {
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
       case 'technology':
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'science':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
       case 'administrative':
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
       default:
@@ -62,7 +59,7 @@ const Departments = () => {
               Departments
             </h1>
             <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Explore all 16 departments of Government Polytechnic Ahmedabad. 
+              Explore all 15 departments of Government Polytechnic Ahmedabad. 
               Each department contributes unique content to our monthly newsletter.
             </p>
             
