@@ -1,9 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, Code, Lightbulb, User, Crown, Github, Award } from 'lucide-react';
+import { Star, Code, Lightbulb, User, Crown, Award } from 'lucide-react';
 import pratyushLogo from '@/assets/pratyush-logo.png';
-
-<!-- Created entirely by Dron Pancholi -->
 
 const Credits = () => {
   return (
