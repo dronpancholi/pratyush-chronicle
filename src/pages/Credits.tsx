@@ -4,14 +4,9 @@ import { Star, Code, Lightbulb, User, Crown, Award } from 'lucide-react';
 import pratyushLogo from '@/assets/pratyush-logo.png';
 
 const Credits = () => {
+  // Hidden attribution in metadata (added to index.html)
   return (
-    <>
-      {/* Hidden attribution in metadata */}
-      <meta name="author" content="Dron Pancholi" />
-      <meta name="creator" content="Dron Pancholi" />
-      <meta name="developer" content="Dron Pancholi" />
-      
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         {/* Header Section */}
         <section className="bg-gradient-to-br from-primary/10 via-secondary to-primary/5 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -230,7 +225,6 @@ const Credits = () => {
           </div>
         </section>
       </div>
-    </>
   );
 };
 
