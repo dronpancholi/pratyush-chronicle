@@ -173,6 +173,11 @@ const About = () => {
                         Contact Us
                       </a>
                     </Button>
+                    <Button variant="outline" asChild className="ml-4">
+                      <a href="/credits">
+                        View Credits
+                      </a>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

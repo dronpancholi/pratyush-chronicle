@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      department_issues: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          department_id: string
+          id: string
+          issue_id: string
+          pdf_url: string | null
+          published_at: string | null
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          department_id: string
+          id?: string
+          issue_id: string
+          pdf_url?: string | null
+          published_at?: string | null
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          department_id?: string
+          id?: string
+          issue_id?: string
+          pdf_url?: string | null
+          published_at?: string | null
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "department_issues_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "department_issues_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       department_newsletters: {
         Row: {
           content: string | null
@@ -92,6 +143,42 @@ export type Database = {
         }
         Relationships: []
       }
+      issues: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          global_pdf_url: string | null
+          id: string
+          month: number
+          published_at: string | null
+          title: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          global_pdf_url?: string | null
+          id?: string
+          month: number
+          published_at?: string | null
+          title: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          global_pdf_url?: string | null
+          id?: string
+          month?: number
+          published_at?: string | null
+          title?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       newsletters: {
         Row: {
           created_at: string
@@ -137,6 +224,8 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          department_id: string | null
+          email: string | null
           full_name: string | null
           id: string
           role: string
@@ -145,6 +234,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          department_id?: string | null
+          email?: string | null
           full_name?: string | null
           id?: string
           role?: string
@@ -153,13 +244,23 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          department_id?: string | null
+          email?: string | null
           full_name?: string | null
           id?: string
           role?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
