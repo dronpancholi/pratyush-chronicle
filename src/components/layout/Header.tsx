@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import pratyushLogo from '@/assets/pratyush-logo.png';
+import ThemeToggle from '@/components/ThemeToggle';
+import pratyushLogo from '@/assets/pratyush-club-logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,7 +61,8 @@ const Header = () => {
           </nav>
 
           {/* Auth Section */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2">
+            <ThemeToggle />
             {user ? (
               <div className="flex items-center space-x-2">
                 {profile && ['admin', 'editor'].includes(profile.role) && (
@@ -86,17 +88,19 @@ const Header = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={isMenuOpen}
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+          {/* Mobile Controls */}
+          <div className="flex items-center space-x-2 md:hidden">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}

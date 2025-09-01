@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FileText, Mail, MapPin, ExternalLink } from 'lucide-react';
+import pratyushLogo from '@/assets/pratyush-club-logo.png';
 
 const Footer = () => {
   return (
@@ -9,9 +10,11 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <FileText className="h-6 w-6" />
-              </div>
+              <img 
+                src={pratyushLogo} 
+                alt="Pratyush Club Logo" 
+                className="h-10 w-10 object-contain"
+              />
               <div>
                 <h3 className="text-lg font-bold text-foreground">Pratyush Newsletter</h3>
                 <p className="text-sm text-muted-foreground">Government Polytechnic Ahmedabad</p>
@@ -64,11 +67,14 @@ const Footer = () => {
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <a 
-                  href="mailto:pratyushclub@gpa.ac.in" 
+                  href="mailto:dronpancholi@gmail.com" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  pratyushclub@gpa.ac.in
+                  dronpancholi@gmail.com
                 </a>
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <span className="text-xs text-muted-foreground">Phone: 8780855565</span>
               </div>
             </div>
           </div>

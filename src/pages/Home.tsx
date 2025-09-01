@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Download, Users, Archive, Calendar, BookOpen } from 'lucide-react';
 import heroImage from '@/assets/hero-newsletter.jpg';
 import DepartmentsHorizontal from '@/components/DepartmentsHorizontal';
+import NewsletterHighlights from '@/components/NewsletterHighlights';
+import EmailSubscription from '@/components/EmailSubscription';
 
 const Home = () => {
   const currentDate = new Date();
@@ -51,10 +53,14 @@ const Home = () => {
             <p className="text-xl sm:text-2xl mb-4 opacity-90">
               Student Newsletter of Government Polytechnic Ahmedabad
             </p>
-            <p className="text-lg mb-8 opacity-80 max-w-2xl mx-auto">
+            <p className="text-lg mb-4 opacity-80 max-w-2xl mx-auto">
               Discover the latest achievements, innovations, and updates from all departments 
               of our prestigious institution. Stay connected with the academic and technical excellence 
               that defines our community.
+            </p>
+            <p className="text-sm mb-8 opacity-70 italic max-w-xl mx-auto">
+              <strong>Note:</strong> The Pratyush Newsletter is not the official newsletter of Government Polytechnic Ahmedabad. 
+              It is a student-led initiative created by and for the students of GPA.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
               <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100">
@@ -74,71 +80,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Current Issue Highlight */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Current Issue</h2>
-            <p className="text-lg text-muted-foreground">
-              {currentMonth} Edition - Now Available
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <Card className="academic-card">
-              <CardHeader className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  <div className="bg-primary text-primary-foreground rounded-full p-4">
-                    <FileText className="h-8 w-8" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl">Monthly Newsletter - {currentMonth}</CardTitle>
-                <p className="text-muted-foreground">
-                  Featuring updates from all 15 departments, achievements, events, and announcements
-                </p>
-              </CardHeader>
-              <CardContent className="text-center space-y-6">
-                <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-                  <Button asChild className="w-full sm:w-auto">
-                    <Link to="/current-issue">
-                      <FileText className="h-4 w-4 mr-2" />
-                      Read Online
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" className="w-full sm:w-auto">
-                    <a href="/newsletter.pdf" download>
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
-                    </a>
-                  </Button>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-border">
-                  <div className="text-center">
-                    <Calendar className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-sm font-medium text-foreground">Monthly</p>
-                    <p className="text-xs text-muted-foreground">Publication</p>
-                  </div>
-                  <div className="text-center">
-                    <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-sm font-medium text-foreground">15 Departments</p>
-                    <p className="text-xs text-muted-foreground">Full Coverage</p>
-                  </div>
-                  <div className="text-center">
-                    <BookOpen className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-sm font-medium text-foreground">Rich Content</p>
-                    <p className="text-xs text-muted-foreground">Articles & Updates</p>
-                  </div>
-                  <div className="text-center">
-                    <Archive className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-sm font-medium text-foreground">Archived</p>
-                    <p className="text-xs text-muted-foreground">All Issues</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+      {/* Newsletter Highlights */}
+      <NewsletterHighlights />
 
       {/* Features Section */}
       <section className="py-16 bg-secondary/50">
@@ -172,19 +115,22 @@ const Home = () => {
       {/* Departments Horizontal Display */}
       <DepartmentsHorizontal />
 
+      {/* Email Subscription */}
+      <EmailSubscription />
+
       {/* Call to Action */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Stay Updated</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">Explore Archive</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Explore our comprehensive archive of newsletters and discover the rich history 
-              of achievements and innovations at Government Polytechnic Ahmedabad.
+              Discover the rich history of achievements and innovations at Government Polytechnic Ahmedabad 
+              through our comprehensive newsletter archive.
             </p>
             <Button asChild size="lg">
               <Link to="/archive">
                 <Archive className="h-5 w-5 mr-2" />
-                Browse Archive
+                Browse Complete Archive
               </Link>
             </Button>
           </div>

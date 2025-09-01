@@ -12,7 +12,7 @@ interface SearchBarProps {
 
 const SearchBar = ({ 
   onSearch, 
-  placeholder = "Search departments, articles, or topics...", 
+  placeholder = "Search newsletters by month, year, or department...", 
   className = "",
   value = ""
 }: SearchBarProps) => {
@@ -28,6 +28,12 @@ const SearchBar = ({
     onSearch('');
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSearch(searchQuery);
+    }
+  };
+
   return (
     <div className={`relative ${className}`}>
       <div className="relative">
@@ -37,6 +43,7 @@ const SearchBar = ({
           placeholder={placeholder}
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
+          onKeyPress={handleKeyPress}
           className="pl-10 pr-10 search-input"
         />
         {searchQuery && (

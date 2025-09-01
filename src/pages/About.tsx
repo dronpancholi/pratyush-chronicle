@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Mail, MapPin, ExternalLink } from 'lucide-react';
-import pratyushLogo from '@/assets/pratyush-logo.png';
+import pratyushLogo from '@/assets/pratyush-club-logo.png';
 
 const About = () => {
   return (
@@ -48,10 +48,11 @@ const About = () => {
                     </p>
                     
                     <p className="text-lg leading-relaxed text-foreground">
-                      The design, development, and implementation of the site have been carried out by 
-                      <span className="font-medium text-primary"> Dron Pancholi</span>, under the guidance and 
-                      supervision of <span className="font-medium text-primary">Alaukik Dave</span>, the founder 
-                      of the Pratyush Club.
+                      Under the visionary guidance of <span className="font-medium text-primary">Alaukik Dave</span>, 
+                      President and Founder of the Pratyush Club, this comprehensive platform has been brought to life. 
+                      The complete design, development, and implementation work has been carried out by 
+                      <span className="font-medium text-primary"> Dron Pancholi</span>, ensuring every aspect 
+                      meets the highest standards of functionality and user experience.
                     </p>
                     
                     <p className="text-lg leading-relaxed text-foreground">
@@ -84,7 +85,7 @@ const About = () => {
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground italic">
-                  Official Pratyush Club Logo
+                  Pratyush Club – Students' Initiative of Government Polytechnic Ahmedabad
                 </p>
               </div>
 
@@ -109,18 +110,19 @@ const About = () => {
                           </div>
                         </div>
                         
-                        <div className="flex items-center space-x-3">
-                          <Mail className="h-5 w-5 text-primary" />
-                          <div>
-                            <p className="font-medium text-foreground">Newsletter Contact</p>
-                            <a 
-                              href="mailto:pratyushclub@gpa.ac.in" 
-                              className="text-primary hover:text-primary-hover text-sm transition-colors"
-                            >
-                              pratyushclub@gpa.ac.in
-                            </a>
-                          </div>
-                        </div>
+                         <div className="flex items-center space-x-3">
+                           <Mail className="h-5 w-5 text-primary" />
+                           <div>
+                             <p className="font-medium text-foreground">Developer Contact</p>
+                             <a 
+                               href="mailto:dronpancholi@gmail.com" 
+                               className="text-primary hover:text-primary-hover text-sm transition-colors"
+                             >
+                               dronpancholi@gmail.com
+                             </a>
+                             <p className="text-xs text-muted-foreground mt-1">Phone: 8780855565</p>
+                           </div>
+                         </div>
 
                         <div className="flex items-center space-x-3">
                           <ExternalLink className="h-5 w-5 text-primary" />
@@ -166,13 +168,13 @@ const About = () => {
                     </div>
                   </div>
 
-                  <div className="mt-8 pt-8 border-t border-border text-center">
-                    <Button asChild>
-                      <a href="mailto:pratyushclub@gpa.ac.in">
-                        <Mail className="h-4 w-4 mr-2" />
-                        Contact Us
-                      </a>
-                    </Button>
+                   <div className="mt-8 pt-8 border-t border-border text-center">
+                     <Button asChild>
+                       <a href="mailto:dronpancholi@gmail.com">
+                         <Mail className="h-4 w-4 mr-2" />
+                         Contact Us
+                       </a>
+                     </Button>
                     <Button variant="outline" asChild className="ml-4">
                       <a href="/credits">
                         View Credits
