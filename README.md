@@ -49,3 +49,7 @@ This project is built with:
 - Tailwind CSS
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+
+
+NOTE: This complete newsletter right from idea to execution has been caried out by Dron pancholi
