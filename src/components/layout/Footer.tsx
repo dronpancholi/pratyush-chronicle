@@ -97,12 +97,10 @@ const Footer = () => {
 
             {/* Copyright */}
             <div className="text-center md:text-right">
-              <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} Pratyush Club, Government Polytechnic Ahmedabad
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                All rights reserved.
-              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-between text-sm">
+                <p>© {new Date().getFullYear()} Pratyush Club, Government Polytechnic Ahmedabad. All rights reserved.</p>
+                <p className="text-muted-foreground mt-2 sm:mt-0">V 0.2 Kalam</p>
+              </div>
             </div>
           </div>
         </div>

@@ -143,6 +143,30 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          created_at: string | null
+          id: string
+          rating: number
+          review: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          rating: number
+          review?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rating?: number
+          review?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       issues: {
         Row: {
           created_at: string
@@ -221,34 +245,85 @@ export type Database = {
         }
         Relationships: []
       }
+      notice_board: {
+        Row: {
+          body: string
+          created_at: string | null
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          link_url: string | null
+          pinned: boolean | null
+          published_at: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          link_url?: string | null
+          pinned?: boolean | null
+          published_at?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          link_url?: string | null
+          pinned?: boolean | null
+          published_at?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
+          department: string | null
           department_id: string | null
           email: string | null
           full_name: string | null
           id: string
+          phone: string | null
           role: string
+          semester: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
+          department?: string | null
           department_id?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
           role?: string
+          semester?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
+          department?: string | null
           department_id?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
           role?: string
+          semester?: number | null
           updated_at?: string
           user_id?: string
         }
@@ -262,12 +337,139 @@ export type Database = {
           },
         ]
       }
+      reactions: {
+        Row: {
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          reaction: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          reaction: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          reaction?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          category: string
+          created_at: string | null
+          department: string
+          external_link: string | null
+          id: string
+          media_url: string | null
+          moderated_by: string | null
+          pinned: boolean | null
+          semester: number | null
+          status: string | null
+          submitter_email: string | null
+          submitter_name: string
+          summary: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          department: string
+          external_link?: string | null
+          id?: string
+          media_url?: string | null
+          moderated_by?: string | null
+          pinned?: boolean | null
+          semester?: number | null
+          status?: string | null
+          submitter_email?: string | null
+          submitter_name: string
+          summary: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          department?: string
+          external_link?: string | null
+          id?: string
+          media_url?: string | null
+          moderated_by?: string | null
+          pinned?: boolean | null
+          semester?: number | null
+          status?: string | null
+          submitter_email?: string | null
+          submitter_name?: string
+          summary?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          confirm_token: string | null
+          confirmed: boolean | null
+          created_at: string | null
+          department: string
+          email: string
+          id: string
+          name: string
+          phone: string
+          semester: number | null
+        }
+        Insert: {
+          confirm_token?: string | null
+          confirmed?: boolean | null
+          created_at?: string | null
+          department: string
+          email: string
+          id?: string
+          name: string
+          phone: string
+          semester?: number | null
+        }
+        Update: {
+          confirm_token?: string | null
+          confirmed?: boolean | null
+          created_at?: string | null
+          department?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string
+          semester?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_like_count: {
+        Args: { entity_id_param: string; entity_type_param: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

@@ -15,6 +15,7 @@ const Header = () => {
     { name: 'Home', href: '/', icon: Home },
     { name: 'Current Issue', href: '/current-issue', icon: FileText },
     { name: 'Departments', href: '/departments', icon: Users },
+    { name: 'Students', href: '/students', icon: Users },
     { name: 'Archive', href: '/archive', icon: Archive },
     { name: 'About', href: '/about', icon: Phone },
     { name: 'Credits', href: '/credits', icon: User },
@@ -65,6 +66,12 @@ const Header = () => {
             <ThemeToggle />
             {user ? (
               <div className="flex items-center space-x-2">
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/profile">
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Link>
+                </Button>
                 {profile && ['admin', 'editor'].includes(profile.role) && (
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/admin">

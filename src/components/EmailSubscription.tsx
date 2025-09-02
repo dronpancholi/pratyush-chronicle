@@ -2,47 +2,75 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, Bell, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const EmailSubscription = () => {
-  const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    name: '',
+    phone: '',
+    department: '',
+    semester: ''
+  });
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { toast } = useToast();
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const departments = [
+    'Computer Engineering',
+    'Information Technology', 
+    'Electronics & Communication',
+    'Electrical Engineering',
+    'Mechanical Engineering',
+    'Civil Engineering',
+    'Chemical Engineering',
+    'Automobile Engineering',
+    'Production Engineering',
+    'Instrumentation & Control',
+    'Biomedical Engineering',
+    'Textile Technology',
+    'Plastic & Polymer Technology',
+    'Rubber Technology'
+  ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !email.includes('@')) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive"
-      });
+    if (!formData.email || !formData.name || !formData.phone || !formData.department) {
+      setError('Please fill in all required fields');
       return;
     }
-
-    setIsLoading(true);
     
-    // Simulate subscription process
-    setTimeout(() => {
-      setIsSubscribed(true);
-      setIsLoading(false);
-      toast({
-        title: "Successfully Subscribed!",
-        description: "You'll receive notifications when new newsletters are published.",
+    setLoading(true);
+    setError('');
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('subscribe-email', {
+        body: {
+          email: formData.email,
+          name: formData.name,
+          phone: formData.phone,
+          department: formData.department,
+          semester: formData.semester ? parseInt(formData.semester) : null
+        }
       });
+
+      if (error) throw error;
       
-      // Reset after 3 seconds to allow multiple subscriptions for demo
-      setTimeout(() => {
-        setIsSubscribed(false);
-        setEmail('');
-      }, 3000);
-    }, 1000);
+      setSuccess(true);
+      setFormData({ email: '', name: '', phone: '', department: '', semester: '' });
+    } catch (error: any) {
+      setError(error.message || 'Failed to subscribe. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (isSubscribed) {
+  if (success) {
     return (
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,36 +112,73 @@ const EmailSubscription = () => {
               </p>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubscribe} className="space-y-4">
-                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                  <div className="flex-1">
-                    <Input
-                      type="email"
-                      placeholder="Enter your email address"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full"
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    disabled={isLoading}
-                    className="w-full sm:w-auto"
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Subscribing...
-                      </>
-                    ) : (
-                      <>
-                        <Mail className="h-4 w-4 mr-2" />
-                        Subscribe
-                      </>
-                    )}
-                  </Button>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input
+                    type="text"
+                    placeholder="Full Name *"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                  <Input
+                    type="email"
+                    placeholder="Email Address *"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
+                  <Input
+                    type="tel"
+                    placeholder="Phone Number *"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    required
+                  />
+                  <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Department *" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departments.map((dept) => (
+                        <SelectItem key={dept} value={dept}>
+                          {dept}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="number"
+                    placeholder="Semester (optional)"
+                    value={formData.semester}
+                    onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
+                    min="1"
+                    max="8"
+                  />
                 </div>
+                
+                {error && (
+                  <p className="text-sm text-red-600">{error}</p>
+                )}
+                
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Subscribing...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="h-4 w-4 mr-2" />
+                      Subscribe to Newsletter
+                    </>
+                  )}
+                </Button>
+                
                 <p className="text-xs text-muted-foreground text-center">
                   We respect your privacy. Unsubscribe at any time.
                 </p>

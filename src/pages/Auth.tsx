@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -140,7 +140,7 @@ const Auth = () => {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-y-2">
               <button
                 type="button"
                 onClick={() => setIsSignUp(!isSignUp)}
@@ -151,6 +151,17 @@ const Auth = () => {
                   : "Don't have an account? Sign up"
                 }
               </button>
+              
+              {!isSignUp && (
+                <div>
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-muted-foreground hover:text-primary underline"
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -6,6 +6,7 @@ import heroImage from '@/assets/hero-newsletter.jpg';
 import DepartmentsHorizontal from '@/components/DepartmentsHorizontal';
 import NewsletterHighlights from '@/components/NewsletterHighlights';
 import EmailSubscription from '@/components/EmailSubscription';
+import NoticeBoard from '@/components/NoticeBoard';
 
 const Home = () => {
   const currentDate = new Date();
@@ -82,6 +83,13 @@ const Home = () => {
 
       {/* Newsletter Highlights */}
       <NewsletterHighlights />
+
+      {/* Notice Board */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <NoticeBoard limit={3} />
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="py-16 bg-secondary/50">
