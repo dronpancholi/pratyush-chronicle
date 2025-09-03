@@ -7,6 +7,8 @@ import DepartmentsHorizontal from '@/components/DepartmentsHorizontal';
 import NewsletterHighlights from '@/components/NewsletterHighlights';
 import EmailSubscription from '@/components/EmailSubscription';
 import NoticeBoard from '@/components/NoticeBoard';
+import TrendingNewsletters from '@/components/TrendingNewsletters';
+import StudentSpotlight from '@/components/StudentSpotlight';
 
 const Home = () => {
   const currentDate = new Date();
@@ -84,6 +86,12 @@ const Home = () => {
       {/* Newsletter Highlights */}
       <NewsletterHighlights />
 
+      {/* Trending Newsletters */}
+      <TrendingNewsletters />
+
+      {/* Student Spotlight */}
+      <StudentSpotlight />
+
       {/* Notice Board */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -104,16 +112,33 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon;
+              const getLink = () => {
+                switch (feature.title) {
+                  case 'Monthly Issues':
+                    return '/current-issue';
+                  case '15 Departments':
+                    return '/departments';
+                  case 'Complete Archive':
+                    return '/archive';
+                  case 'Rich Content':
+                    return '/students';
+                  default:
+                    return '/';
+                }
+              };
+              
               return (
-                <Card key={index} className="academic-card text-center">
-                  <CardContent className="p-6">
-                    <div className="bg-primary/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                      <Icon className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                    <p className="text-muted-foreground text-sm">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                <Link key={index} to={getLink()}>
+                  <Card className="academic-card text-center hover:scale-105 transition-transform duration-200 cursor-pointer">
+                    <CardContent className="p-6">
+                      <div className="bg-primary/10 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                        <Icon className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
+                      <p className="text-muted-foreground text-sm">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
               );
             })}
           </div>

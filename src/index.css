@@ -221,4 +221,14 @@ All colors MUST be HSL. Professional, accessible, academic aesthetic.
   .archive-grid {
     @apply grid grid-cols-1 lg:grid-cols-4 gap-8;
   }
+
+  /* Scroll Animation for Announcement Bar */
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
 }

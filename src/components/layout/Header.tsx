@@ -4,6 +4,7 @@ import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut } from 'lu
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import ThemeToggle from '@/components/ThemeToggle';
+import GlobalSearchBar from '@/components/GlobalSearchBar';
 import pratyushLogo from '@/assets/pratyush-club-logo.png';
 
 const Header = () => {
@@ -61,8 +62,9 @@ const Header = () => {
             })}
           </nav>
 
-          {/* Auth Section */}
+          {/* Search and Actions */}
           <div className="hidden md:flex items-center space-x-2">
+            <GlobalSearchBar />
             <ThemeToggle />
             {user ? (
               <div className="flex items-center space-x-2">

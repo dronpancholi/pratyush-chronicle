@@ -99,7 +99,7 @@ const Footer = () => {
             <div className="text-center md:text-right">
               <div className="flex flex-col sm:flex-row items-center justify-between text-sm">
                 <p>© {new Date().getFullYear()} Pratyush Club, Government Polytechnic Ahmedabad. All rights reserved.</p>
-                <p className="text-muted-foreground mt-2 sm:mt-0">V 0.2 Kalam</p>
+                <p className="text-muted-foreground mt-2 sm:mt-0">V 0.2.1 Kalam</p>
               </div>
             </div>
           </div>
