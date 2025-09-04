@@ -94,15 +94,18 @@ const Settings = () => {
     if (!user) return;
 
     try {
-      // Fetch user submissions
+      // Fetch user submissions - handle both email and user_id cases
       const { data: submissionsData, error: submissionsError } = await supabase
         .from('submissions')
         .select('*')
-        .eq('submitter_email', user.email)
+        .or(`submitter_email.eq.${user.email},created_by.eq.${user.id}`)
         .order('created_at', { ascending: false });
 
-      if (submissionsError) throw submissionsError;
-      setSubmissions(submissionsData || []);
+      if (submissionsError) {
+        console.error('Submissions fetch error:', submissionsError);
+      } else {
+        setSubmissions(submissionsData || []);
+      }
 
       // Fetch user feedback
       const { data: feedbackData, error: feedbackError } = await supabase
@@ -111,8 +114,11 @@ const Settings = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (feedbackError) throw feedbackError;
-      setUserFeedback(feedbackData || []);
+      if (feedbackError) {
+        console.error('Feedback fetch error:', feedbackError);
+      } else {
+        setUserFeedback(feedbackData || []);
+      }
 
       // Fetch user reactions
       const { data: reactionsData, error: reactionsError } = await supabase
@@ -121,8 +127,11 @@ const Settings = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (reactionsError) throw reactionsError;
-      setUserReactions(reactionsData || []);
+      if (reactionsError) {
+        console.error('Reactions fetch error:', reactionsError);
+      } else {
+        setUserReactions(reactionsData || []);
+      }
     } catch (error) {
       console.error('Error fetching user activity:', error);
     }
@@ -145,16 +154,23 @@ const Settings = () => {
         })
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Profile update error:', error);
+        throw error;
+      }
+
+      // Refresh the profile data after successful update
+      await fetchUserActivity();
 
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated.",
       });
     } catch (error: any) {
+      console.error('Profile update failed:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to update profile",
         variant: "destructive"
       });
     } finally {
@@ -237,9 +253,13 @@ const Settings = () => {
       const { error } = await supabase
         .from('feedback')
         .delete()
-        .eq('id', feedbackId);
+        .eq('id', feedbackId)
+        .eq('user_id', user?.id); // Extra security check
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete feedback error:', error);
+        throw error;
+      }
 
       setUserFeedback(prev => prev.filter(f => f.id !== feedbackId));
       toast({
@@ -247,9 +267,10 @@ const Settings = () => {
         description: "Your feedback has been removed.",
       });
     } catch (error: any) {
+      console.error('Failed to delete feedback:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to delete feedback",
         variant: "destructive"
       });
     }
@@ -260,9 +281,13 @@ const Settings = () => {
       const { error } = await supabase
         .from('reactions')
         .delete()
-        .eq('id', reactionId);
+        .eq('id', reactionId)
+        .eq('user_id', user?.id); // Extra security check
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete reaction error:', error);
+        throw error;
+      }
 
       setUserReactions(prev => prev.filter(r => r.id !== reactionId));
       toast({
@@ -270,9 +295,10 @@ const Settings = () => {
         description: "Your reaction has been removed.",
       });
     } catch (error: any) {
+      console.error('Failed to remove reaction:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to remove reaction",
         variant: "destructive"
       });
     }
@@ -310,7 +336,7 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+          <TabsList className={`grid w-full ${profile?.role === 'admin' ? 'grid-cols-2 lg:grid-cols-6' : 'grid-cols-2 lg:grid-cols-5'}`}>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="theme">Theme</TabsTrigger>
             <TabsTrigger value="submissions">Submissions</TabsTrigger>
@@ -341,11 +367,9 @@ const Settings = () => {
                   </Avatar>
                   <div>
                     <Label htmlFor="avatar-upload" className="cursor-pointer">
-                      <Button variant="outline" disabled={uploading} asChild>
-                        <span>
-                          <Upload className="h-4 w-4 mr-2" />
-                          {uploading ? 'Uploading...' : 'Upload Avatar'}
-                        </span>
+                      <Button variant="outline" disabled={uploading} type="button">
+                        <Upload className="h-4 w-4 mr-2" />
+                        {uploading ? 'Uploading...' : 'Upload Avatar'}
                       </Button>
                     </Label>
                     <Input
