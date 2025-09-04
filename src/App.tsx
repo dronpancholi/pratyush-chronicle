@@ -14,6 +14,7 @@ import Departments from "./pages/Departments";
 import Students from "./pages/Students";
 import Submit from "./pages/Submit";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import Archive from "./pages/Archive";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
@@ -45,6 +46,7 @@ const App = () => (
                   <Route path="/students" element={<Students />} />
                   <Route path="/submit" element={<Submit />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
                   <Route path="/archive" element={<Archive />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/auth" element={<Auth />} />

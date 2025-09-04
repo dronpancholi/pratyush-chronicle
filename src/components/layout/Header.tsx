@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut } from 'lucide-react';
+import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -74,6 +74,12 @@ const Header = () => {
                     Profile
                   </Link>
                 </Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/settings">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </Link>
+                </Button>
                 {profile && ['admin', 'editor'].includes(profile.role) && (
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/admin">
@@ -140,6 +146,18 @@ const Header = () => {
             <div className="px-2 pt-2 pb-3 border-t border-border">
               {user ? (
                 <div className="space-y-2">
+                  <Button className="w-full" variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/profile">
+                      <User className="h-4 w-4 mr-2" />
+                      Profile
+                    </Link>
+                  </Button>
+                  <Button className="w-full" variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/settings">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </Link>
+                  </Button>
                   {profile && ['admin', 'editor'].includes(profile.role) && (
                     <Button className="w-full" variant="outline" asChild onClick={() => setIsMenuOpen(false)}>
                       <Link to="/admin">
