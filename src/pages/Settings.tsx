@@ -336,14 +336,32 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className={`grid w-full ${profile?.role === 'admin' ? 'grid-cols-2 lg:grid-cols-6' : 'grid-cols-2 lg:grid-cols-5'}`}>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="theme">Theme</TabsTrigger>
-            <TabsTrigger value="submissions">Submissions</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-1">
+            <TabsTrigger value="profile" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Profile
+            </TabsTrigger>
+            <TabsTrigger value="theme" className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              Theme
+            </TabsTrigger>
+            <TabsTrigger value="submissions" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Submissions
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="flex items-center gap-2">
+              <ThumbsUp className="h-4 w-4" />
+              Activity
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Security
+            </TabsTrigger>
             {profile?.role === 'admin' && (
-              <TabsTrigger value="admin">Admin Tools</TabsTrigger>
+              <TabsTrigger value="admin" className="flex items-center gap-2">
+                <Crown className="h-4 w-4" />
+                Admin
+              </TabsTrigger>
             )}
           </TabsList>
 
@@ -358,30 +376,41 @@ const Settings = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Avatar Section */}
-                <div className="flex items-center space-x-4">
-                  <Avatar className="h-20 w-20">
-                    <AvatarImage src={profileData.avatar_url} />
-                    <AvatarFallback>
-                      {profileData.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <Label htmlFor="avatar-upload" className="cursor-pointer">
-                      <Button variant="outline" disabled={uploading} type="button">
-                        <Upload className="h-4 w-4 mr-2" />
-                        {uploading ? 'Uploading...' : 'Upload Avatar'}
-                      </Button>
-                    </Label>
-                    <Input
-                      id="avatar-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarUpload}
-                      className="hidden"
-                    />
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Max 2MB, will be resized to 512px
-                    </p>
+                <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
+                  <div className="relative">
+                    <Avatar className="h-24 w-24 border-2 border-muted">
+                      <AvatarImage src={profileData.avatar_url} className="object-cover" />
+                      <AvatarFallback className="text-lg font-semibold">
+                        {profileData.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="space-y-2">
+                      <div>
+                        <Label htmlFor="avatar-upload" className="cursor-pointer">
+                          <Button 
+                            variant="outline" 
+                            disabled={uploading} 
+                            type="button"
+                            className="relative"
+                          >
+                            <Upload className="h-4 w-4 mr-2" />
+                            {uploading ? 'Uploading...' : 'Upload Avatar'}
+                          </Button>
+                        </Label>
+                        <Input
+                          id="avatar-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                          className="hidden"
+                        />
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Max 2MB • JPG, PNG, or GIF • Best at 512x512px
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -665,13 +694,13 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <Button onClick={handlePasswordReset} variant="outline" className="w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Button onClick={handlePasswordReset} variant="outline" className="w-full h-12">
                     <Shield className="h-4 w-4 mr-2" />
                     Reset Password
                   </Button>
                   
-                  <Button onClick={signOut} variant="destructive" className="w-full">
+                  <Button onClick={signOut} variant="destructive" className="w-full h-12">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
                   </Button>
