@@ -250,7 +250,6 @@ export type Database = {
           body: string
           created_at: string | null
           created_by: string | null
-          "Engineer’s Day Celebration": string
           expires_at: string | null
           id: string
           link_url: string | null
@@ -260,23 +259,21 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          body?: string
+          body: string
           created_at?: string | null
           created_by?: string | null
-          "Engineer’s Day Celebration": string
           expires_at?: string | null
           id?: string
           link_url?: string | null
           pinned?: boolean | null
           published_at?: string | null
-          title?: string
+          title: string
           updated_at?: string | null
         }
         Update: {
           body?: string
           created_at?: string | null
           created_by?: string | null
-          "Engineer’s Day Celebration"?: string
           expires_at?: string | null
           id?: string
           link_url?: string | null
