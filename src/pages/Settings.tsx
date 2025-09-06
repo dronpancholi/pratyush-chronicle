@@ -7,12 +7,10 @@ import {
   Activity, 
   Shield, 
   Settings as SettingsIcon,
-  Upload,
   Save,
   LogOut,
   Trash2,
   Crown,
-  Camera,
   Mail,
   Phone,
   Calendar,
@@ -20,7 +18,17 @@ import {
   GraduationCap,
   Edit3,
   Check,
-  X
+  X,
+  Bell,
+  Languages,
+  Eye,
+  Download,
+  Filter,
+  Star,
+  MessageSquare,
+  Hash,
+  Search,
+  Clock
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -28,8 +36,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/providers/ThemeProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -68,12 +78,28 @@ const Settings = () => {
     full_name: '',
     phone: '',
     department: '',
-    semester: '',
-    avatar_url: ''
+    semester: ''
   });
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  
+  // New features state
+  const [notifications, setNotifications] = useState({
+    email: true,
+    push: false,
+    newsletter: true,
+    announcements: true
+  });
+  const [language, setLanguage] = useState('en');
+  const [privacy, setPrivacy] = useState({
+    profileVisible: true,
+    activityVisible: false
+  });
+  const [accessibility, setAccessibility] = useState({
+    fontSize: 'medium',
+    highContrast: false,
+    reduceMotion: false
+  });
   
   // User activity data
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -86,13 +112,13 @@ const Settings = () => {
         full_name: profile.full_name || '',
         phone: profile.phone || '',
         department: profile.department || '',
-        semester: profile.semester?.toString() || '',
-        avatar_url: profile.avatar_url || ''
+        semester: profile.semester?.toString() || ''
       });
     }
     
     if (user) {
       fetchUserActivity();
+      loadUserPreferences();
     }
   }, [profile, user]);
 
@@ -153,7 +179,6 @@ const Settings = () => {
         phone: profileData.phone,
         department: profileData.department,
         semester: profileData.semester ? parseInt(profileData.semester) : null,
-        avatar_url: profileData.avatar_url,
         updated_at: new Date().toISOString()
       };
 
@@ -188,91 +213,59 @@ const Settings = () => {
     }
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files || event.target.files.length === 0 || !user) return;
+  const loadUserPreferences = async () => {
+    // Load preferences from localStorage
+    const savedNotifications = localStorage.getItem('notifications');
+    const savedLanguage = localStorage.getItem('language');
+    const savedPrivacy = localStorage.getItem('privacy');
+    const savedAccessibility = localStorage.getItem('accessibility');
 
-    const file = event.target.files[0];
-    
-    // Validate file
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image file.",
-        variant: "destructive"
-      });
-      return;
-    }
+    if (savedNotifications) setNotifications(JSON.parse(savedNotifications));
+    if (savedLanguage) setLanguage(savedLanguage);
+    if (savedPrivacy) setPrivacy(JSON.parse(savedPrivacy));
+    if (savedAccessibility) setAccessibility(JSON.parse(savedAccessibility));
+  };
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      toast({
-        title: "File too large",
-        description: "Please select an image smaller than 5MB.",
-        variant: "destructive"
-      });
-      return;
-    }
+  const savePreferences = (type: string, data: any) => {
+    localStorage.setItem(type, JSON.stringify(data));
+    toast({
+      title: "Preferences saved",
+      description: `Your ${type} preferences have been updated.`,
+    });
+  };
 
-    setUploading(true);
+  const exportData = async () => {
     try {
-      const fileExt = file.name.split('.').pop()?.toLowerCase();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const filePath = fileName;
-
-      // Upload file to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { 
-          cacheControl: '3600',
-          upsert: true 
-        });
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw uploadError;
-      }
-
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      if (!urlData?.publicUrl) {
-        throw new Error('Failed to get public URL');
-      }
-
-      // Update profile data and save to database
-      const newAvatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-      setProfileData(prev => ({ ...prev, avatar_url: newAvatarUrl }));
+      const userData = {
+        profile: profileData,
+        submissions,
+        feedback: userFeedback,
+        reactions: userReactions,
+        exportedAt: new Date().toISOString()
+      };
       
-      // Immediately save to database
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .upsert({
-          user_id: user.id,
-          avatar_url: newAvatarUrl,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        });
-
-      if (updateError) {
-        console.error('Profile update error:', updateError);
-        throw updateError;
-      }
+      const dataStr = JSON.stringify(userData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `pratyush-club-data-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
       
       toast({
-        title: "Avatar updated",
-        description: "Your profile picture has been updated successfully.",
+        title: "Data exported",
+        description: "Your data has been downloaded successfully.",
       });
     } catch (error: any) {
-      console.error('Avatar upload failed:', error);
       toast({
-        title: "Upload failed",
-        description: error.message || "Failed to upload avatar. Please try again.",
+        title: "Export failed",
+        description: error.message || "Failed to export data",
         variant: "destructive"
       });
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -388,22 +381,30 @@ const Settings = () => {
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-1 h-auto p-1">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-1 h-auto p-1">
               <TabsTrigger value="profile" className="flex items-center gap-2 h-10">
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">Profile</span>
+              </TabsTrigger>
+              <TabsTrigger value="preferences" className="flex items-center gap-2 h-10">
+                <Bell className="h-4 w-4" />
+                <span className="hidden sm:inline">Preferences</span>
               </TabsTrigger>
               <TabsTrigger value="theme" className="flex items-center gap-2 h-10">
                 <Palette className="h-4 w-4" />
                 <span className="hidden sm:inline">Theme</span>
               </TabsTrigger>
-              <TabsTrigger value="submissions" className="flex items-center gap-2 h-10">
-                <FileText className="h-4 w-4" />
-                <span className="hidden sm:inline">Submissions</span>
+              <TabsTrigger value="privacy" className="flex items-center gap-2 h-10">
+                <Eye className="h-4 w-4" />
+                <span className="hidden sm:inline">Privacy</span>
               </TabsTrigger>
-              <TabsTrigger value="activity" className="flex items-center gap-2 h-10">
-                <Activity className="h-4 w-4" />
-                <span className="hidden sm:inline">Activity</span>
+              <TabsTrigger value="accessibility" className="flex items-center gap-2 h-10">
+                <Languages className="h-4 w-4" />
+                <span className="hidden sm:inline">Access</span>
+              </TabsTrigger>
+              <TabsTrigger value="data" className="flex items-center gap-2 h-10">
+                <Download className="h-4 w-4" />
+                <span className="hidden sm:inline">Data</span>
               </TabsTrigger>
               <TabsTrigger value="security" className="flex items-center gap-2 h-10">
                 <Shield className="h-4 w-4" />
@@ -439,59 +440,42 @@ const Settings = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
-                  {/* Avatar Section */}
+                  {/* User Info Section */}
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-                    <div className="relative group">
-                      <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
-                        <AvatarImage 
-                          src={profileData.avatar_url} 
-                          className="object-cover"
-                        />
+                    <div className="flex flex-col items-center">
+                      <Avatar className="h-24 w-24 border-4 border-background shadow-lg mb-4">
                         <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary/20 to-primary/40">
                           {profileData.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Label htmlFor="avatar-upload" className="cursor-pointer">
-                          <Camera className="h-8 w-8 text-white" />
-                        </Label>
-                      </div>
-                      <Input
-                        id="avatar-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarUpload}
-                        className="hidden"
-                        disabled={uploading}
-                      />
+                      {profile?.role && (
+                        <Badge variant={profile.role === 'admin' ? 'default' : 'secondary'}>
+                          {profile.role === 'admin' && <Crown className="h-3 w-3 mr-1" />}
+                          {profile.role.toUpperCase()}
+                        </Badge>
+                      )}
                     </div>
                     
                     <div className="flex-1 text-center sm:text-left">
-                      <div className="space-y-3">
-                        <div>
-                          <Label htmlFor="avatar-upload" className="cursor-pointer">
-                            <Button 
-                              variant="outline" 
-                              disabled={uploading}
-                              type="button"
-                              className="relative"
-                            >
-                              <Upload className="h-4 w-4 mr-2" />
-                              {uploading ? 'Uploading...' : 'Change Avatar'}
-                            </Button>
-                          </Label>
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold">
+                          {profileData.full_name || user.email}
+                        </h3>
+                        <p className="text-muted-foreground">{user.email}</p>
+                        <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                          {profileData.department && (
+                            <Badge variant="outline">
+                              <Briefcase className="h-3 w-3 mr-1" />
+                              {profileData.department}
+                            </Badge>
+                          )}
+                          {profileData.semester && (
+                            <Badge variant="outline">
+                              <GraduationCap className="h-3 w-3 mr-1" />
+                              Semester {profileData.semester}
+                            </Badge>
+                          )}
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          Recommended: Square image, at least 300x300px
-                          <br />
-                          Max file size: 5MB • Formats: JPG, PNG, GIF
-                        </p>
-                        {profile?.role && (
-                          <Badge variant={profile.role === 'admin' ? 'default' : 'secondary'} className="mt-2">
-                            {profile.role === 'admin' && <Crown className="h-3 w-3 mr-1" />}
-                            {profile.role.toUpperCase()}
-                          </Badge>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -734,6 +718,276 @@ const Settings = () => {
                       ))}
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Preferences Tab - New Feature */}
+            <TabsContent value="preferences" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5" />
+                    Notification Preferences
+                  </CardTitle>
+                  <CardDescription>
+                    Control how and when you receive notifications
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">Email Notifications</Label>
+                        <p className="text-sm text-muted-foreground">Receive notifications via email</p>
+                      </div>
+                      <Switch
+                        checked={notifications.email}
+                        onCheckedChange={(checked) => {
+                          const newNotifications = { ...notifications, email: checked };
+                          setNotifications(newNotifications);
+                          savePreferences('notifications', newNotifications);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">Newsletter Updates</Label>
+                        <p className="text-sm text-muted-foreground">Get notified about new newsletters</p>
+                      </div>
+                      <Switch
+                        checked={notifications.newsletter}
+                        onCheckedChange={(checked) => {
+                          const newNotifications = { ...notifications, newsletter: checked };
+                          setNotifications(newNotifications);
+                          savePreferences('notifications', newNotifications);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">Announcements</Label>
+                        <p className="text-sm text-muted-foreground">Important club announcements</p>
+                      </div>
+                      <Switch
+                        checked={notifications.announcements}
+                        onCheckedChange={(checked) => {
+                          const newNotifications = { ...notifications, announcements: checked };
+                          setNotifications(newNotifications);
+                          savePreferences('notifications', newNotifications);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Languages className="h-5 w-5" />
+                    Language & Region
+                  </CardTitle>
+                  <CardDescription>
+                    Set your preferred language and regional settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Language</Label>
+                      <Select
+                        value={language}
+                        onValueChange={(value) => {
+                          setLanguage(value);
+                          savePreferences('language', value);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="en">English</SelectItem>
+                          <SelectItem value="hi">हिंदी (Hindi)</SelectItem>
+                          <SelectItem value="gu">ગુજરાતી (Gujarati)</SelectItem>
+                          <SelectItem value="te">తెలుగు (Telugu)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Privacy Tab - New Feature */}
+            <TabsContent value="privacy" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5" />
+                    Privacy Settings
+                  </CardTitle>
+                  <CardDescription>
+                    Control your privacy and what others can see
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">Profile Visibility</Label>
+                        <p className="text-sm text-muted-foreground">Make your profile visible to other users</p>
+                      </div>
+                      <Switch
+                        checked={privacy.profileVisible}
+                        onCheckedChange={(checked) => {
+                          const newPrivacy = { ...privacy, profileVisible: checked };
+                          setPrivacy(newPrivacy);
+                          savePreferences('privacy', newPrivacy);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">Activity Tracking</Label>
+                        <p className="text-sm text-muted-foreground">Allow tracking of your activity for analytics</p>
+                      </div>
+                      <Switch
+                        checked={privacy.activityVisible}
+                        onCheckedChange={(checked) => {
+                          const newPrivacy = { ...privacy, activityVisible: checked };
+                          setPrivacy(newPrivacy);
+                          savePreferences('privacy', newPrivacy);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Accessibility Tab - New Feature */}
+            <TabsContent value="accessibility" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5" />
+                    Accessibility Options
+                  </CardTitle>
+                  <CardDescription>
+                    Customize the interface for better accessibility
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Font Size</Label>
+                      <Select
+                        value={accessibility.fontSize}
+                        onValueChange={(value) => {
+                          const newAccessibility = { ...accessibility, fontSize: value };
+                          setAccessibility(newAccessibility);
+                          savePreferences('accessibility', newAccessibility);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="small">Small</SelectItem>
+                          <SelectItem value="medium">Medium (Default)</SelectItem>
+                          <SelectItem value="large">Large</SelectItem>
+                          <SelectItem value="extra-large">Extra Large</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">High Contrast Mode</Label>
+                        <p className="text-sm text-muted-foreground">Increase contrast for better visibility</p>
+                      </div>
+                      <Switch
+                        checked={accessibility.highContrast}
+                        onCheckedChange={(checked) => {
+                          const newAccessibility = { ...accessibility, highContrast: checked };
+                          setAccessibility(newAccessibility);
+                          savePreferences('accessibility', newAccessibility);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label className="text-base">Reduce Motion</Label>
+                        <p className="text-sm text-muted-foreground">Minimize animations and transitions</p>
+                      </div>
+                      <Switch
+                        checked={accessibility.reduceMotion}
+                        onCheckedChange={(checked) => {
+                          const newAccessibility = { ...accessibility, reduceMotion: checked };
+                          setAccessibility(newAccessibility);
+                          savePreferences('accessibility', newAccessibility);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Data Management Tab - New Feature */}
+            <TabsContent value="data" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Download className="h-5 w-5" />
+                    Data Management
+                  </CardTitle>
+                  <CardDescription>
+                    Export, backup, and manage your data
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card className="bg-muted/20">
+                      <CardContent className="p-4">
+                        <div className="text-center space-y-3">
+                          <Download className="h-8 w-8 mx-auto text-primary" />
+                          <h3 className="font-medium">Export Your Data</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Download all your data in JSON format
+                          </p>
+                          <Button onClick={exportData} className="w-full">
+                            <Download className="h-4 w-4 mr-2" />
+                            Export Data
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-muted/20">
+                      <CardContent className="p-4">
+                        <div className="text-center space-y-3">
+                          <Activity className="h-8 w-8 mx-auto text-blue-500" />
+                          <h3 className="font-medium">Activity Summary</h3>
+                          <div className="grid grid-cols-2 gap-2 text-sm">
+                            <div className="text-center">
+                              <div className="font-bold text-lg">{submissions.length}</div>
+                              <div className="text-muted-foreground">Submissions</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-bold text-lg">{userFeedback.length}</div>
+                              <div className="text-muted-foreground">Reviews</div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
