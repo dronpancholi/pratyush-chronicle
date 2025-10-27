@@ -41,6 +41,7 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useTheme } from '@/providers/ThemeProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -71,6 +72,7 @@ interface UserReaction {
 
 const Settings = () => {
   const { user, profile, signOut } = useAuth();
+  const { role, isAdmin } = useUserRole();
   const { theme, setTheme } = useTheme();
   
   // Profile state
@@ -448,10 +450,10 @@ const Settings = () => {
                           {profileData.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      {profile?.role && (
-                        <Badge variant={profile.role === 'admin' ? 'default' : 'secondary'}>
-                          {profile.role === 'admin' && <Crown className="h-3 w-3 mr-1" />}
-                          {profile.role.toUpperCase()}
+                      {role && (
+                        <Badge variant={isAdmin ? 'default' : 'secondary'}>
+                          {isAdmin && <Crown className="h-3 w-3 mr-1" />}
+                          {role.toUpperCase()}
                         </Badge>
                       )}
                     </div>

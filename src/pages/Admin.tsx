@@ -1,12 +1,14 @@
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import Dashboard from '@/components/Dashboard';
 import { departments } from '@/data/departments';
 import { Navigate } from 'react-router-dom';
 
 const Admin = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, loading } = useAuth();
+  const { hasRole, isLoading: roleLoading } = useUserRole();
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -21,7 +23,7 @@ const Admin = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (!profile || !['admin', 'editor', 'president', 'contributor'].includes(profile.role)) {
+  if (!hasRole(['admin', 'editor', 'president', 'contributor'])) {
     return <Navigate to="/" replace />;
   }
 

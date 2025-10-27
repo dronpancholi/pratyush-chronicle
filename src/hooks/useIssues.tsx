@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { useUserRole } from './useUserRole';
 
 export interface Issue {
   id: string;
@@ -38,6 +39,7 @@ export const useIssues = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user, profile } = useAuth();
+  const { hasRole } = useUserRole();
 
   const fetchIssues = async () => {
     try {
@@ -90,7 +92,7 @@ export const useIssues = () => {
   };
 
   const uploadGlobalNewsletter = async (file: File, metadata: { year: number; month: number; title: string }) => {
-    if (!user || !profile || !['admin', 'president'].includes(profile.role)) {
+    if (!user || !hasRole(['admin', 'president'])) {
       throw new Error('Unauthorized: Admin or President access required');
     }
 
@@ -152,8 +154,8 @@ export const useIssues = () => {
     }
 
     // Check permissions
-    const hasPermission = ['admin', 'president'].includes(profile.role) || 
-      (profile.role === 'contributor' && profile.department_id === metadata.department_id);
+    const hasPermission = hasRole(['admin', 'president']) || 
+      (hasRole('contributor') && profile.department_id === metadata.department_id);
     
     if (!hasPermission) {
       throw new Error('Unauthorized: You can only upload to your assigned department');
@@ -205,7 +207,7 @@ export const useIssues = () => {
   };
 
   const publishIssue = async (issueId: string) => {
-    if (!user || !profile || !['admin', 'president'].includes(profile.role)) {
+    if (!user || !hasRole(['admin', 'president'])) {
       throw new Error('Unauthorized: Admin or President access required');
     }
 
@@ -225,7 +227,7 @@ export const useIssues = () => {
   };
 
   const unpublishIssue = async (issueId: string) => {
-    if (!user || !profile || !['admin', 'president'].includes(profile.role)) {
+    if (!user || !hasRole(['admin', 'president'])) {
       throw new Error('Unauthorized: Admin or President access required');
     }
 

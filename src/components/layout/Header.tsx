@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, FileText, Users, Archive, Phone, Home, User, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import ThemeToggle from '@/components/ThemeToggle';
 import GlobalSearchBar from '@/components/GlobalSearchBar';
 import pratyushLogo from '@/assets/pratyush-club-logo.png';
@@ -11,6 +12,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
+  const { hasRole } = useUserRole();
 
   const navigation = [
     { name: 'Home', href: '/', icon: Home },
@@ -80,7 +82,7 @@ const Header = () => {
                     Settings
                   </Link>
                 </Button>
-                {profile && ['admin', 'editor'].includes(profile.role) && (
+                {profile && hasRole(['admin', 'editor']) && (
                   <Button variant="outline" size="sm" asChild>
                     <Link to="/admin">
                       <User className="h-4 w-4 mr-2" />
@@ -158,7 +160,7 @@ const Header = () => {
                       Settings
                     </Link>
                   </Button>
-                  {profile && ['admin', 'editor'].includes(profile.role) && (
+                  {profile && hasRole(['admin', 'editor']) && (
                     <Button className="w-full" variant="outline" asChild onClick={() => setIsMenuOpen(false)}>
                       <Link to="/admin">
                         <User className="h-4 w-4 mr-2" />
