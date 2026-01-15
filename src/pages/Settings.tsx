@@ -52,7 +52,11 @@ interface Submission {
   category: string;
   status: string;
   created_at: string;
-  summary: string;
+  summary: string | null;
+  description: string;
+  external_link: string | null;
+  submitter_name: string | null;
+  student_name: string;
 }
 
 interface UserFeedback {

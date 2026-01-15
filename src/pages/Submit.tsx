@@ -123,13 +123,16 @@ const Submit = () => {
     try {
       const submissionData = {
         title: formData.title,
+        description: formData.summary,
         summary: formData.summary,
         category: formData.category,
         department: formData.department,
         semester: formData.semester ? parseInt(formData.semester) : null,
         external_link: formData.external_link || null,
+        student_name: formData.submitter_name || user?.email || 'Anonymous',
         submitter_name: formData.submitter_name || user?.email || 'Anonymous',
         submitter_email: formData.submitter_email || user?.email || null,
+        email: formData.submitter_email || user?.email || null,
         media_url: formData.media_url || null
       };
 

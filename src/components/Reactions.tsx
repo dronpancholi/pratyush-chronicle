@@ -28,12 +28,12 @@ const Reactions = ({ entityType, entityId, className = '' }: ReactionsProps) => 
   const fetchReactions = async () => {
     try {
       const { data, error } = await supabase.rpc('get_like_count', {
-        entity_type_param: entityType,
-        entity_id_param: entityId
+        p_entity_type: entityType,
+        p_entity_id: entityId
       });
 
       if (error) throw error;
-      setLikeCount(data || 0);
+      setLikeCount(typeof data === 'number' ? data : 0);
     } catch (error) {
       console.error('Error fetching reactions:', error);
     }
