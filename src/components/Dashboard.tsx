@@ -6,10 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload, FileText, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Upload, FileText, CheckCircle, XCircle, Clock, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useIssues } from '@/hooks/useIssues';
 import { departments as departmentData } from '@/data/departments';
+import SubmissionsManager from './SubmissionsManager';
 
 interface DashboardProps {
   departments: typeof departmentData;
@@ -168,80 +170,218 @@ const Dashboard = ({ departments }: DashboardProps) => {
           </Alert>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Upload Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Upload className="h-5 w-5 mr-2" />
-                Upload Newsletter
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Upload Type Selection (for admin/president) */}
-                {['admin', 'president'].includes(profile?.role) && (
-                  <div className="space-y-2">
-                    <Label>Upload Type</Label>
-                    <Select value={uploadType} onValueChange={(value) => setUploadType(value as 'global' | 'department')}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="global">Global Newsletter</SelectItem>
-                        <SelectItem value="department">Department Newsletter</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
+        {/* Admin/President Tabs */}
+        {['admin', 'president'].includes(profile?.role) ? (
+          <Tabs defaultValue="newsletters" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="newsletters" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Newsletters
+              </TabsTrigger>
+              <TabsTrigger value="submissions" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Student Submissions
+              </TabsTrigger>
+            </TabsList>
 
-                {/* Global Newsletter Fields */}
-                {uploadType === 'global' && (
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="title">Newsletter Title *</Label>
-                      <Input
-                        id="title"
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        placeholder="Enter newsletter title"
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
+            <TabsContent value="newsletters">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Upload Form */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Upload className="h-5 w-5 mr-2" />
+                      Upload Newsletter
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      {/* Upload Type Selection */}
                       <div className="space-y-2">
-                        <Label htmlFor="year">Year *</Label>
-                        <Input
-                          id="year"
-                          type="number"
-                          value={formData.year}
-                          onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                          min="2020"
-                          max="2030"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="month">Month *</Label>
-                        <Select value={formData.month.toString()} onValueChange={(value) => setFormData({ ...formData, month: parseInt(value) })}>
+                        <Label>Upload Type</Label>
+                        <Select value={uploadType} onValueChange={(value) => setUploadType(value as 'global' | 'department')}>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
-                              <SelectItem key={month} value={month.toString()}>
-                                {new Date(2023, month - 1).toLocaleString('default', { month: 'long' })}
-                              </SelectItem>
-                            ))}
+                            <SelectItem value="global">Global Newsletter</SelectItem>
+                            <SelectItem value="department">Department Newsletter</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
-                  </div>
-                )}
 
-                {/* Department Newsletter Fields */}
-                {uploadType === 'department' && (
+                      {/* Global Newsletter Fields */}
+                      {uploadType === 'global' && (
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="title">Newsletter Title *</Label>
+                            <Input
+                              id="title"
+                              value={formData.title}
+                              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                              placeholder="Enter newsletter title"
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="year">Year *</Label>
+                              <Input
+                                id="year"
+                                type="number"
+                                value={formData.year}
+                                onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                                min="2020"
+                                max="2030"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="month">Month *</Label>
+                              <Select value={formData.month.toString()} onValueChange={(value) => setFormData({ ...formData, month: parseInt(value) })}>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                                    <SelectItem key={month} value={month.toString()}>
+                                      {new Date(2023, month - 1).toLocaleString('default', { month: 'long' })}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Department Newsletter Fields */}
+                      {uploadType === 'department' && (
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="issue">Select Issue *</Label>
+                            <Select value={formData.issueId} onValueChange={(value) => setFormData({ ...formData, issueId: value })}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select an issue" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableIssues.map(issue => (
+                                  <SelectItem key={issue.id} value={issue.id}>
+                                    {issue.title} ({issue.year}-{issue.month.toString().padStart(2, '0')})
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="summary">Summary (Optional)</Label>
+                            <Textarea
+                              id="summary"
+                              value={formData.summary}
+                              onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                              placeholder="Brief summary of your department's newsletter content"
+                              rows={3}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* File Upload */}
+                      <div className="space-y-2">
+                        <Label htmlFor="newsletter-file">PDF File *</Label>
+                        <Input
+                          id="newsletter-file"
+                          type="file"
+                          accept=".pdf"
+                          onChange={handleFileChange}
+                          required
+                        />
+                        {selectedFile && (
+                          <p className="text-sm text-muted-foreground">
+                            Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                          </p>
+                        )}
+                      </div>
+
+                      <Button type="submit" disabled={!selectedFile || uploading} className="w-full">
+                        {uploading ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload Newsletter
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+
+                {/* Status Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <FileText className="h-5 w-5 mr-2" />
+                      Manage Issues
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {issues.slice(0, 10).map(issue => (
+                        <div key={issue.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                          <div>
+                            <p className="font-medium">{issue.title}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {issue.year}-{issue.month.toString().padStart(2, '0')}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            {issue.published_at ? (
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-600" />
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handlePublishToggle(issue.id, !!issue.published_at)}
+                            >
+                              {issue.published_at ? 'Unpublish' : 'Publish'}
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                      {issues.length === 0 && (
+                        <p className="text-muted-foreground text-center py-4">
+                          No issues yet. Upload your first global newsletter!
+                        </p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="submissions">
+              <SubmissionsManager />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          /* Contributor/Editor view */
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Upload Form */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Upload className="h-5 w-5 mr-2" />
+                  Upload Newsletter
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="issue">Select Issue *</Label>
@@ -269,126 +409,80 @@ const Dashboard = ({ departments }: DashboardProps) => {
                       />
                     </div>
                   </div>
-                )}
 
-                {/* File Upload */}
-                <div className="space-y-2">
-                  <Label htmlFor="newsletter-file">PDF File *</Label>
-                  <Input
-                    id="newsletter-file"
-                    type="file"
-                    accept=".pdf"
-                    onChange={handleFileChange}
-                    required
-                  />
-                  {selectedFile && (
-                    <p className="text-sm text-muted-foreground">
-                      Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-                    </p>
-                  )}
-                </div>
-
-                <Button type="submit" disabled={!selectedFile || uploading} className="w-full">
-                  {uploading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Newsletter
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Status Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileText className="h-5 w-5 mr-2" />
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Issues Management (Admin/President only) */}
-                {['admin', 'president'].includes(profile?.role) && (
-                  <div>
-                    <h4 className="font-semibold mb-3">Manage Issues</h4>
-                    <div className="space-y-2">
-                      {issues.slice(0, 5).map(issue => (
-                        <div key={issue.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
-                          <div>
-                            <p className="font-medium">{issue.title}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {issue.year}-{issue.month.toString().padStart(2, '0')}
-                            </p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            {issue.published_at ? (
-                              <CheckCircle className="h-4 w-4 text-green-600" />
-                            ) : (
-                              <XCircle className="h-4 w-4 text-red-600" />
-                            )}
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handlePublishToggle(issue.id, !!issue.published_at)}
-                            >
-                              {issue.published_at ? 'Unpublish' : 'Publish'}
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Department Issues */}
-                <div>
-                  <h4 className="font-semibold mb-3">
-                    {profile?.role === 'contributor' ? 'Your Submissions' : 'Department Submissions'}
-                  </h4>
                   <div className="space-y-2">
-                    {departmentIssues
-                      .filter(di => 
-                        profile?.role === 'contributor' 
-                          ? di.department_id === profile.department_id 
-                          : true
-                      )
-                      .slice(0, 5)
-                      .map(issue => (
-                        <div key={issue.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
-                          <div>
-                            <p className="font-medium">{issue.department?.name}</p>
-                            {issue.summary && (
-                              <p className="text-sm text-muted-foreground">{issue.summary}</p>
-                            )}
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            {issue.published_at ? (
-                              <CheckCircle className="h-4 w-4 text-green-600" />
-                            ) : (
-                              <Clock className="h-4 w-4 text-yellow-600" />
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    {departmentIssues.length === 0 && (
-                      <p className="text-muted-foreground text-center py-4">
-                        No submissions yet. Upload your first newsletter!
+                    <Label htmlFor="newsletter-file">PDF File *</Label>
+                    <Input
+                      id="newsletter-file"
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      required
+                    />
+                    {selectedFile && (
+                      <p className="text-sm text-muted-foreground">
+                        Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
                       </p>
                     )}
                   </div>
+
+                  <Button type="submit" disabled={!selectedFile || uploading} className="w-full">
+                    {uploading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload Newsletter
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* Department Submissions */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <FileText className="h-5 w-5 mr-2" />
+                  Your Submissions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {departmentIssues
+                    .filter(di => di.department_id === profile?.department_id)
+                    .slice(0, 5)
+                    .map(issue => (
+                      <div key={issue.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                        <div>
+                          <p className="font-medium">{issue.department?.name}</p>
+                          {issue.summary && (
+                            <p className="text-sm text-muted-foreground">{issue.summary}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {issue.published_at ? (
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <Clock className="h-4 w-4 text-yellow-600" />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  {departmentIssues.filter(di => di.department_id === profile?.department_id).length === 0 && (
+                    <p className="text-muted-foreground text-center py-4">
+                      No submissions yet. Upload your first newsletter!
+                    </p>
+                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
