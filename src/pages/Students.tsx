@@ -9,13 +9,15 @@ import { Link } from 'react-router-dom';
 interface Submission {
   id: string;
   title: string;
-  summary: string;
+  summary: string | null;
+  description: string;
   category: string;
-  department: string;
+  department: string | null;
   semester: number | null;
   media_url: string | null;
   external_link: string | null;
-  submitter_name: string;
+  submitter_name: string | null;
+  student_name: string;
   pinned: boolean;
   created_at: string;
 }
@@ -164,12 +166,12 @@ const Students = () => {
 
                   <CardContent className="flex-1 flex flex-col">
                     <p className="text-muted-foreground mb-4 line-clamp-3 flex-1">
-                      {submission.summary}
+                      {submission.summary || submission.description}
                     </p>
                     
                     <div className="space-y-3">
                       <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-                        <span>by {submission.submitter_name}</span>
+                        <span>by {submission.submitter_name || submission.student_name}</span>
                         <span>•</span>
                         <span>{submission.department}</span>
                         {submission.semester && (

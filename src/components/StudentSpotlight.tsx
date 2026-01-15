@@ -114,10 +114,10 @@ const StudentSpotlight = () => {
               
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
-                  {submission.summary}
+                  {submission.summary || submission.description}
                 </p>
                 <div className="text-xs text-muted-foreground">
-                  By {submission.submitter_name}
+                  By {submission.submitter_name || submission.student_name}
                 </div>
               </CardContent>
             </Card>
